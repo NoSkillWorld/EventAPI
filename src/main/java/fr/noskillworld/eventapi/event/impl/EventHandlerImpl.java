@@ -6,20 +6,21 @@ import fr.noskillworld.eventapi.team.Team;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EventHandlerImpl implements EventHandler {
 
-    private final List<Player> participants;
+    private List<Player> participants;
     private final List<Team> teams;
 
     private EventState eventState;
 
-    public EventHandlerImpl(List<Player> players) {
+    public EventHandlerImpl() {
         teams = new ArrayList<>();
+    }
 
+    @Override
+    public void init(List<Player> players) {
         eventState = EventState.PENDING;
         participants = players;
     }

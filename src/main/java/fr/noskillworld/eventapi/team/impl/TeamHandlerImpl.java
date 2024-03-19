@@ -52,9 +52,9 @@ public class TeamHandlerImpl implements TeamHandler {
     }
 
     @Override
-    public Team createTeam() {
+    public Team createTeam(int id) {
         List<Player> players = new ArrayList<>();
-        Team team = new Team(null, teams.size(), players);
+        Team team = new Team(null, id, players);
         teams.add(team);
         return team;
     }
@@ -66,6 +66,7 @@ public class TeamHandlerImpl implements TeamHandler {
         if (team == null) {
             return;
         }
+        teams.remove(team);
         //Do something
     }
 
@@ -84,7 +85,23 @@ public class TeamHandlerImpl implements TeamHandler {
 
     @Override
     public void distributePlayersIntoTeams(int count) {
-        //Do something
+        List<Player> participants = EventAPI.getEventHandler().getParticipants();
+        Team current;
+        int teamId = 0;
+
+        if (count == 0 || count > participants.size()) {
+            count = participants.size();
+        }
+
+        for (Player p : participants) {
+            if (getTeamById(teamId) == null) {
+                current = createTeam(teamId);
+            } else {
+                current = getTeamById(teamId);
+            }
+            playerTeam.put(p, current);
+            teamId = (teamId + 1) % count;
+        }
     }
 
     private @Nullable Team getTeamByName(String name) {

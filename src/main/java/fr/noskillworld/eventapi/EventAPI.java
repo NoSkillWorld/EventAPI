@@ -4,7 +4,6 @@ import fr.noskillworld.api.NSWAPI;
 import fr.noskillworld.api.utils.Credentials;
 import fr.noskillworld.eventapi.event.impl.EventHandlerImpl;
 import fr.noskillworld.eventapi.team.impl.TeamHandlerImpl;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.bukkit.Location;
 
 public class EventAPI {
@@ -17,25 +16,16 @@ public class EventAPI {
 
     private static NSWAPI nswapi;
 
-    public EventAPI() {
+    public EventAPI(Credentials credentials) {
         instance = this;
 
-        eventHandler = new EventHandlerImpl(null);
+        eventHandler = new EventHandlerImpl();
         teamHandler = new TeamHandlerImpl();
-        setAPI();
+        setAPI(credentials);
     }
 
-    private void setAPI() {
-        Dotenv dotenv = Dotenv.configure()
-                .directory("/env/")
-                .filename(".env")
-                .load();
-
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
-        String name = dotenv.get("DB_NAME");
-
-        nswapi = NSWAPI.create(new Credentials(user, password, name));
+    private void setAPI(Credentials credentials) {
+        nswapi = NSWAPI.create(credentials);
     }
 
     public static EventAPI getInstance() {

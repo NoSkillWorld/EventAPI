@@ -8,6 +8,13 @@ import java.util.List;
 public interface EventHandler {
 
     /**
+     * Initialize the event
+     *
+     * @param players the players already present in the game
+     */
+    void init(List<Player> players);
+
+    /**
      * Returns the participants of the event
      *
      * @return A list of players

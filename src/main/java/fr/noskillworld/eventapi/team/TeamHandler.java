@@ -46,9 +46,10 @@ public interface TeamHandler {
     /**
      * Creates a new empty team
      *
+     * @param id The unique id of the team to create
      * @return The created team
      */
-    Team createTeam();
+    Team createTeam(int id);
 
     /**
      * Deletes a team by its id
