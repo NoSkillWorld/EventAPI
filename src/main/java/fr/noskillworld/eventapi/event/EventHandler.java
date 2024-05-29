@@ -1,5 +1,6 @@
 package fr.noskillworld.eventapi.event;
 
+import fr.noskillworld.eventapi.exception.EventStartedException;
 import fr.noskillworld.eventapi.team.Team;
 import org.bukkit.entity.Player;
 
@@ -42,6 +43,20 @@ public interface EventHandler {
      * Aborts the event
      */
     void abortEvent();
+
+    /**
+     * adds a participant to the event
+     *
+     * @param player the player to add into the event
+     */
+    void addParticipant(Player player) throws EventStartedException;
+
+    /**
+     * removes a participant to the event
+     *
+     * @param player the player to remove from the event
+     */
+    void removeParticipant(Player player);
 
     /**
      * Returns the current state of the event<br>
