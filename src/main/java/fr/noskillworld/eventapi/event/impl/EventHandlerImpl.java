@@ -2,7 +2,7 @@ package fr.noskillworld.eventapi.event.impl;
 
 import fr.noskillworld.eventapi.event.EventHandler;
 import fr.noskillworld.eventapi.event.EventState;
-import fr.noskillworld.eventapi.exception.EventStartedException;
+import fr.noskillworld.eventapi.event.exception.EventStartedException;
 import fr.noskillworld.eventapi.team.Team;
 import org.bukkit.entity.Player;
 
@@ -65,7 +65,10 @@ public class EventHandlerImpl implements EventHandler {
     }
 
     @Override
-    public void removeParticipant(Player player) {
+    public void removeParticipant(Player player) throws EventStartedException {
+        if (eventState != EventState.PENDING) {
+            throw new EventStartedException("L'évent a déjà débuté !");
+        }
         participants.remove(player);
     }
 

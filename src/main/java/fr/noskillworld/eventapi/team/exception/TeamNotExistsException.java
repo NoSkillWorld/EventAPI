@@ -1,4 +1,4 @@
-package fr.noskillworld.eventapi.exception;
+package fr.noskillworld.eventapi.team.exception;
 
 public class TeamNotExistsException extends Exception {
 

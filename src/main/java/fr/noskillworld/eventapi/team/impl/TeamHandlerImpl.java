@@ -3,8 +3,10 @@ package fr.noskillworld.eventapi.team.impl;
 import fr.noskillworld.eventapi.EventAPI;
 import fr.noskillworld.eventapi.team.Team;
 import fr.noskillworld.eventapi.team.TeamHandler;
+import fr.noskillworld.eventapi.team.exception.PlayerNotInTeamException;
+import fr.noskillworld.eventapi.team.exception.TeamNotExistsException;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,33 +24,35 @@ public class TeamHandlerImpl implements TeamHandler {
     }
 
     @Override
-    public List<Player> getPlayersInTeam(int id) {
-        Team team = getTeamById(id);
-
-        if (team == null) {
-            return null;
+    public List<Player> getPlayersInTeam(int id) throws TeamNotExistsException {
+        Team team;
+        try {
+            team = getTeamById(id);
+        } catch (TeamNotExistsException e) {
+            throw new TeamNotExistsException("La team n'existe pas.");
         }
         return team.getPlayers();
     }
 
     @Override
-    public List<Player> getPlayersInTeam(String name) {
-        Team team = getTeamByName(name);
-
-        if (team == null) {
-            return null;
+    public List<Player> getPlayersInTeam(String name) throws TeamNotExistsException {
+        Team team;
+        try {
+            team = getTeamByName(name);
+        } catch (TeamNotExistsException e) {
+            throw new TeamNotExistsException("La team n'existe pas.");
         }
         return team.getPlayers();
     }
 
     @Override
-    public Team getPlayerTeam(Player player) {
+    public Team getPlayerTeam(Player player) throws PlayerNotInTeamException {
         for (Team team : teams) {
             if (team.getPlayers().contains(player)) {
                 return team;
             }
         }
-        return null;
+        throw new PlayerNotInTeamException("Le joueur n'est dans aucune team.");
     }
 
     @Override
@@ -60,21 +64,21 @@ public class TeamHandlerImpl implements TeamHandler {
     }
 
     @Override
-    public void deleteTeam(int id) {
-        Team team = getTeamById(id);
+    public void deleteTeam(int id) throws TeamNotExistsException {
+        Team team;
 
-        if (team == null) {
-            return;
+        try {
+            team = getTeamById(id);
+        } catch (TeamNotExistsException e) {
+            throw new TeamNotExistsException("La team n'existe pas.");
         }
         teams.remove(team);
-        //Do something
     }
 
     @Override
-    public void setPlayerTeam(Player player, Team team) {
+    public void setPlayerTeam(Player player, Team team) throws TeamNotExistsException {
         if (!teams.contains(team)) {
-            //Do something
-            return;
+            throw new TeamNotExistsException("La team n'existe pas.");
         }
         if (playerTeam.get(player) != null) {
             playerTeam.replace(player, team);
@@ -94,31 +98,31 @@ public class TeamHandlerImpl implements TeamHandler {
         }
 
         for (Player p : participants) {
-            if (getTeamById(teamId) == null) {
-                current = createTeam(teamId);
-            } else {
+            try {
                 current = getTeamById(teamId);
+            } catch (TeamNotExistsException e) {
+                current = createTeam(teamId);
             }
             playerTeam.put(p, current);
             teamId = (teamId + 1) % count;
         }
     }
 
-    private @Nullable Team getTeamByName(String name) {
+    private @NotNull Team getTeamByName(String name) throws TeamNotExistsException {
         for (Team team : teams) {
             if (team.getName().equals(name)) {
                 return team;
             }
         }
-        return null;
+        throw new TeamNotExistsException("Team '" + name + "' non trouvée.");
     }
 
-    private @Nullable Team getTeamById(int id) {
+    private @NotNull Team getTeamById(int id) throws TeamNotExistsException {
         for (Team team : teams) {
             if (team.getTeamId() == id) {
                 return team;
             }
         }
-        return null;
+        throw new TeamNotExistsException("Team avec l'id " + id + " non trouvée.");
     }
 }
