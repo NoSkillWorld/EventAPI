@@ -1,0 +1,7 @@
+name: EventAPI
+version: '${project.version}'
+author: NuggetReckt
+prefix: EventAPI
+website: https://play.noskillworld.fr
+main: fr.noskillworld.eventapi.EventAPI
+api-version: 1.20
