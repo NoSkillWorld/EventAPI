@@ -1,4 +1,4 @@
-package fr.noskillworld.eventapi.team.exception;
+package fr.noskillworld.eventapi.api.team.exception;
 
 public class PlayerNotInTeamException extends Exception {
 

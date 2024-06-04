@@ -1,4 +1,4 @@
-package fr.noskillworld.eventapi.team;
+package fr.noskillworld.eventapi.api.team;
 
 public enum TeamStatus {
     PENDING,

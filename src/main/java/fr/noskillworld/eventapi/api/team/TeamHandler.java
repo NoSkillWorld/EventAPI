@@ -1,7 +1,7 @@
-package fr.noskillworld.eventapi.team;
+package fr.noskillworld.eventapi.api.team;
 
-import fr.noskillworld.eventapi.team.exception.PlayerNotInTeamException;
-import fr.noskillworld.eventapi.team.exception.TeamNotExistsException;
+import fr.noskillworld.eventapi.api.team.exception.PlayerNotInTeamException;
+import fr.noskillworld.eventapi.api.team.exception.TeamNotExistsException;
 import org.bukkit.entity.Player;
 
 import java.util.List;

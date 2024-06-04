@@ -1,4 +1,4 @@
-package fr.noskillworld.eventapi.event.exception;
+package fr.noskillworld.eventapi.api.event.exception;
 
 public class EventStartedException extends Exception {
 

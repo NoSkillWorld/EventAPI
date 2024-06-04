@@ -1,10 +1,10 @@
-package fr.noskillworld.eventapi.team.impl;
+package fr.noskillworld.eventapi.api.team.impl;
 
 import fr.noskillworld.eventapi.EventAPI;
-import fr.noskillworld.eventapi.team.Team;
-import fr.noskillworld.eventapi.team.TeamHandler;
-import fr.noskillworld.eventapi.team.exception.PlayerNotInTeamException;
-import fr.noskillworld.eventapi.team.exception.TeamNotExistsException;
+import fr.noskillworld.eventapi.api.team.Team;
+import fr.noskillworld.eventapi.api.team.TeamHandler;
+import fr.noskillworld.eventapi.api.team.exception.PlayerNotInTeamException;
+import fr.noskillworld.eventapi.api.team.exception.TeamNotExistsException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public class TeamHandlerImpl implements TeamHandler {
 
     public TeamHandlerImpl() {
         playerTeam = new HashMap<>();
-        teams = EventAPI.getEventHandler().getTeams();
+        teams = EventAPI.getInstance().getEventHandler().getTeams();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class TeamHandlerImpl implements TeamHandler {
 
     @Override
     public void distributePlayersIntoTeams(int count) {
-        List<Player> participants = EventAPI.getEventHandler().getParticipants();
+        List<Player> participants = EventAPI.getInstance().getEventHandler().getParticipants();
         Team current;
         int teamId = 0;
 

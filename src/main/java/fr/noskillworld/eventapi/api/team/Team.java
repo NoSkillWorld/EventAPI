@@ -1,4 +1,4 @@
-package fr.noskillworld.eventapi.team;
+package fr.noskillworld.eventapi.api.team;
 
 import org.bukkit.entity.Player;
 

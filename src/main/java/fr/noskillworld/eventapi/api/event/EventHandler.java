@@ -1,19 +1,12 @@
-package fr.noskillworld.eventapi.event;
+package fr.noskillworld.eventapi.api.event;
 
-import fr.noskillworld.eventapi.event.exception.EventStartedException;
-import fr.noskillworld.eventapi.team.Team;
+import fr.noskillworld.eventapi.api.event.exception.EventStartedException;
+import fr.noskillworld.eventapi.api.team.Team;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public interface EventHandler {
-
-    /**
-     * Initialize the event
-     *
-     * @param players the players already present in the game
-     */
-    void init(List<Player> players);
 
     /**
      * Returns the participants of the event
@@ -32,17 +25,12 @@ public interface EventHandler {
     /**
      * Starts the event
      */
-    void startEvent();
+    void startEvent(boolean forceStart);
 
     /**
      * Ends the event
      */
-    void endEvent();
-
-    /**
-     * Aborts the event
-     */
-    void abortEvent();
+    void endEvent(boolean forceEnd);
 
     /**
      * adds a participant to the event
@@ -59,9 +47,24 @@ public interface EventHandler {
     void removeParticipant(Player player) throws EventStartedException;
 
     /**
+     * Checks if the player is participating at the event
+     *
+     * @param player the player to check
+     * @return true if the player is participating, false if not
+     */
+    boolean isParticipating(Player player);
+
+    /**
+     * Checks if the event has started or not
+     *
+     * @return true if the event has started, returns false if not
+     */
+    boolean isEventStarted();
+
+    /**
      * Returns the current state of the event<br>
      * States available:<br>
-     * PENDING | STARTING | STARTED | ENDED | ABORTED
+     * PENDING | STARTING | STARTED | ENDED
      *
      * @return The state of the event
      */

@@ -2,12 +2,16 @@ package fr.noskillworld.eventapi;
 
 import fr.noskillworld.api.NSWAPI;
 import fr.noskillworld.api.utils.Credentials;
-import fr.noskillworld.eventapi.event.impl.EventHandlerImpl;
-import fr.noskillworld.eventapi.team.impl.TeamHandlerImpl;
+import fr.noskillworld.eventapi.api.event.impl.EventHandlerImpl;
+import fr.noskillworld.eventapi.api.team.impl.TeamHandlerImpl;
+import fr.noskillworld.eventapi.command.EventCommand;
+import fr.noskillworld.eventapi.listener.OnJoinListener;
+import fr.noskillworld.eventapi.listener.OnLeaveListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class EventAPI extends JavaPlugin {
@@ -32,6 +36,13 @@ public class EventAPI extends JavaPlugin {
     @Override
     public void onEnable() {
         setAPI();
+
+        //Register commands
+        Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand(this));
+
+        //Register listeners
+        getServer().getPluginManager().registerEvents(new OnJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new OnLeaveListener(this), this);
 
         logger.info(String.format("[%s] Plugin loaded successfully", getDescription().getName()));
         logger.info("""
@@ -72,11 +83,11 @@ public class EventAPI extends JavaPlugin {
         return nswapi;
     }
 
-    public static EventHandlerImpl getEventHandler() {
+    public EventHandlerImpl getEventHandler() {
         return eventHandler;
     }
 
-    public static TeamHandlerImpl getTeamHandler() {
+    public TeamHandlerImpl getTeamHandler() {
         return teamHandler;
     }
 

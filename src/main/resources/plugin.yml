@@ -5,3 +5,13 @@ prefix: EventAPI
 website: https://play.noskillworld.fr
 main: fr.noskillworld.eventapi.EventAPI
 api-version: 1.20
+commands:
+  event:
+    description: Commande principale de gestion d'évent
+    aliases: [ e ]
+  team:
+    description: Commande pour joindre, quitter et voir les teams
+    aliases: [ t ]
+permissions:
+  event.admin:
+    description: Permet de gérer l'évent
