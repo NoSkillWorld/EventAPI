@@ -5,6 +5,7 @@ import fr.noskillworld.api.utils.Credentials;
 import fr.noskillworld.eventapi.api.event.impl.EventHandlerImpl;
 import fr.noskillworld.eventapi.api.team.impl.TeamHandlerImpl;
 import fr.noskillworld.eventapi.command.EventCommand;
+import fr.noskillworld.eventapi.command.completion.EventTabCompletion;
 import fr.noskillworld.eventapi.listener.OnJoinListener;
 import fr.noskillworld.eventapi.listener.OnLeaveListener;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 public class EventAPI extends JavaPlugin {
 
     private Location spawnLocation;
+    private final String prefix;
 
     private static EventAPI instance;
     private static EventHandlerImpl eventHandler;
@@ -27,8 +29,9 @@ public class EventAPI extends JavaPlugin {
 
     public EventAPI() {
         instance = this;
+        prefix = "§8[§3Event§8] §r";
 
-        eventHandler = new EventHandlerImpl();
+        eventHandler = new EventHandlerImpl(this);
         teamHandler = new TeamHandlerImpl();
         logger = Logger.getLogger("Minecraft");
     }
@@ -39,6 +42,9 @@ public class EventAPI extends JavaPlugin {
 
         //Register commands
         Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand(this));
+
+        //register TabCompleters
+        Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventTabCompletion());
 
         //Register listeners
         getServer().getPluginManager().registerEvents(new OnJoinListener(this), this);
@@ -93,6 +99,10 @@ public class EventAPI extends JavaPlugin {
 
     public Location getSpawnLocation() {
         return spawnLocation;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 
     public void setSpawnLocation(Location location) {

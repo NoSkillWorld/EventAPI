@@ -24,13 +24,24 @@ public interface EventHandler {
 
     /**
      * Starts the event
+     *
+     * @param forceStart Force the start of the event or not
      */
     void startEvent(boolean forceStart);
 
     /**
      * Ends the event
+     *
+     * @param forceEnd Force the end of the event or not
      */
     void endEvent(boolean forceEnd);
+
+    /**
+     * Resets the event
+     *
+     * @param forceReset Force the reset of the event or not
+     */
+    void resetEvent(boolean forceReset);
 
     /**
      * adds a participant to the event
@@ -70,4 +81,10 @@ public interface EventHandler {
      */
     EventState getEventState();
 
+    /**
+     * Overrides the current state with a new one
+     *
+     * @param state The new state to set
+     */
+    void setState(EventState state);
 }

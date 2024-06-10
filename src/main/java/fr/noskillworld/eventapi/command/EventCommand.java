@@ -22,33 +22,24 @@ public class EventCommand implements CommandExecutor {
                 player.sendMessage("§cVous n'avez pas la permission d'exécuter cette commande !");
                 return true;
             }
+            boolean isForced = getForced(args);
+
             if (args.length >= 1) {
                 switch (args[0]) {
-                    case "start":
-                        eventAPI.getEventHandler().startEvent(false);
-                        break;
-                    case "forcestart":
-                        eventAPI.getEventHandler().startEvent(true);
-                        break;
-                    case "end":
-                        eventAPI.getEventHandler().endEvent(false);
-                        break;
-                    case "forceend":
-                        eventAPI.getEventHandler().endEvent(true);
-                        break;
-                    case "setspawn":
-                        eventAPI.setSpawnLocation(player.getLocation());
-                        break;
-                    case "statut":
-                        player.sendMessage("Statut de l'évent: " + eventAPI.getEventHandler().getEventState());
-                        break;
-                    default:
-                        break;
+                    case "start" -> eventAPI.getEventHandler().startEvent(isForced);
+                    case "end" -> eventAPI.getEventHandler().endEvent(isForced);
+                    case "reset" -> eventAPI.getEventHandler().resetEvent(isForced);
+                    case "setspawn" -> eventAPI.setSpawnLocation(player.getLocation());
+                    case "statut" -> player.sendMessage(eventAPI.getEventHandler().getEventState().getDescription());
                 }
             } else {
                 player.sendMessage("oui bon");
             }
         }
         return true;
+    }
+
+    private boolean getForced(String @NotNull [] args) {
+        return args.length > 1 && args[1].equalsIgnoreCase("force");
     }
 }
