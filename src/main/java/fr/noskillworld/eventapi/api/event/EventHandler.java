@@ -23,6 +23,20 @@ public interface EventHandler {
     List<Team> getTeams();
 
     /**
+     * Returns the name set for the event
+     *
+     * @return A String (if null, default is "Event")
+     */
+    String getName();
+
+    /**
+     * Sets the name of the event
+     *
+     * @param name the name to set
+     */
+    void setName(String name);
+
+    /**
      * Starts the event
      *
      * @param forceStart Force the start of the event or not

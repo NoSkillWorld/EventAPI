@@ -5,7 +5,9 @@ import fr.noskillworld.api.utils.Credentials;
 import fr.noskillworld.eventapi.api.event.impl.EventHandlerImpl;
 import fr.noskillworld.eventapi.api.team.impl.TeamHandlerImpl;
 import fr.noskillworld.eventapi.command.EventCommand;
+import fr.noskillworld.eventapi.command.TeamCommand;
 import fr.noskillworld.eventapi.command.completion.EventTabCompletion;
+import fr.noskillworld.eventapi.command.completion.TeamTabCompletion;
 import fr.noskillworld.eventapi.listener.OnJoinListener;
 import fr.noskillworld.eventapi.listener.OnLeaveListener;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -42,9 +44,11 @@ public class EventAPI extends JavaPlugin {
 
         //Register commands
         Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand(this));
+        Objects.requireNonNull(this.getCommand("teams")).setExecutor(new TeamCommand(this));
 
         //register TabCompleters
         Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventTabCompletion());
+        Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new TeamTabCompletion());
 
         //Register listeners
         getServer().getPluginManager().registerEvents(new OnJoinListener(this), this);

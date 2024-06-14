@@ -6,7 +6,6 @@ import fr.noskillworld.eventapi.api.team.TeamHandler;
 import fr.noskillworld.eventapi.api.team.exception.PlayerNotInTeamException;
 import fr.noskillworld.eventapi.api.team.exception.TeamNotExistsException;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +19,17 @@ public class TeamHandlerImpl implements TeamHandler {
 
     public TeamHandlerImpl() {
         playerTeam = new HashMap<>();
-        teams = EventAPI.getInstance().getEventHandler().getTeams();
+        teams = new ArrayList<>();
+    }
+
+    @Override
+    public Map<Player, Team> getPlayerTeamMap() {
+        return playerTeam;
+    }
+
+    @Override
+    public List<Team> getTeams() {
+        return teams;
     }
 
     @Override
@@ -56,6 +65,26 @@ public class TeamHandlerImpl implements TeamHandler {
     }
 
     @Override
+    public Team getTeamById(int id) throws TeamNotExistsException {
+        for (Team team : teams) {
+            if (team.getTeamId() == id) {
+                return team;
+            }
+        }
+        throw new TeamNotExistsException("Team avec l'id " + id + " non trouvée.");
+    }
+
+    @Override
+    public Team getTeamByName(String name) throws TeamNotExistsException {
+        for (Team team : teams) {
+            if (team.getName().equals(name)) {
+                return team;
+            }
+        }
+        throw new TeamNotExistsException("Team '" + name + "' non trouvée.");
+    }
+
+    @Override
     public Team createTeam(int id) {
         List<Player> players = new ArrayList<>();
         Team team = new Team(null, id, players);
@@ -76,15 +105,19 @@ public class TeamHandlerImpl implements TeamHandler {
     }
 
     @Override
-    public void setPlayerTeam(Player player, Team team) throws TeamNotExistsException {
-        if (!teams.contains(team)) {
-            throw new TeamNotExistsException("La team n'existe pas.");
+    public void setPlayerTeam(Player player, Team team) {
+        if (team == null) {
+            playerTeam.get(player).getPlayers().remove(player);
+            playerTeam.put(player, null);
+            return;
         }
         if (playerTeam.get(player) != null) {
+            playerTeam.get(player).getPlayers().remove(player);
             playerTeam.replace(player, team);
         } else {
             playerTeam.putIfAbsent(player, team);
         }
+        team.getPlayers().add(player);
     }
 
     @Override
@@ -106,23 +139,5 @@ public class TeamHandlerImpl implements TeamHandler {
             playerTeam.put(p, current);
             teamId = (teamId + 1) % count;
         }
-    }
-
-    private @NotNull Team getTeamByName(String name) throws TeamNotExistsException {
-        for (Team team : teams) {
-            if (team.getName().equals(name)) {
-                return team;
-            }
-        }
-        throw new TeamNotExistsException("Team '" + name + "' non trouvée.");
-    }
-
-    private @NotNull Team getTeamById(int id) throws TeamNotExistsException {
-        for (Team team : teams) {
-            if (team.getTeamId() == id) {
-                return team;
-            }
-        }
-        throw new TeamNotExistsException("Team avec l'id " + id + " non trouvée.");
     }
 }

@@ -7,6 +7,7 @@ import fr.noskillworld.eventapi.api.event.exception.EventStartedException;
 import fr.noskillworld.eventapi.api.team.Team;
 import fr.noskillworld.eventapi.event.EventStateChangeEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +18,7 @@ import java.util.List;
 public class EventHandlerImpl implements EventHandler {
 
     private final List<Player> participants;
-    private final List<Team> teams;
+    private String eventName;
 
     private EventState eventState;
 
@@ -25,7 +26,6 @@ public class EventHandlerImpl implements EventHandler {
 
     public EventHandlerImpl(EventAPI api) {
         participants = new ArrayList<>();
-        teams = new ArrayList<>();
         eventAPI = api;
 
         eventState = EventState.PENDING;
@@ -38,7 +38,20 @@ public class EventHandlerImpl implements EventHandler {
 
     @Override
     public List<Team> getTeams() {
-        return teams;
+        return eventAPI.getTeamHandler().getTeams();
+    }
+
+    @Override
+    public String getName() {
+        if (eventName == null) {
+            return "Event";
+        }
+        return eventName;
+    }
+
+    @Override
+    public void setName(String name) {
+        eventName = name;
     }
 
     @Override
@@ -47,7 +60,7 @@ public class EventHandlerImpl implements EventHandler {
 
         setState(EventState.STARTING);
         if (forceStart) {
-            setState(EventState.STARTED);
+            start();
             return;
         }
 
@@ -62,11 +75,7 @@ public class EventHandlerImpl implements EventHandler {
             @Override
             public void run() {
                 if (seconds == 0) {
-                    setState(EventState.STARTED);
-                    for (Player p : participants) {
-                        p.sendTitle("§3Début de l'évent", "§7Bon courage !", 0, 60, 40);
-                        p.playSound(p, Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
-                    }
+                    start();
                     this.cancel();
                 }
                 if (seconds <= 5 && seconds > 0) {
@@ -80,12 +89,29 @@ public class EventHandlerImpl implements EventHandler {
         }.runTaskTimer(eventAPI, 0L, 20L);
     }
 
+    private void start() {
+        setState(EventState.STARTED);
+        if (eventAPI.getTeamHandler().getTeams().isEmpty() || eventAPI.getTeamHandler().getTeams() == null) {
+            eventAPI.getTeamHandler().distributePlayersIntoTeams(participants.size());
+        }
+        for (Player p : participants) {
+            p.sendTitle("§3Début de l'évent", "§7Bon courage !", 0, 60, 40);
+            p.playSound(p, Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+            p.setInvulnerable(false);
+            p.setCanPickupItems(true);
+        }
+    }
+
     @Override
     public void endEvent(boolean forceEnd) {
         if (!isEventStarted()) return;
 
         setState(EventState.ENDED);
-        //Do something
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.setGameMode(GameMode.ADVENTURE);
+            p.setInvulnerable(true);
+            p.setCanPickupItems(false);
+        }
     }
 
     @Override
@@ -93,7 +119,14 @@ public class EventHandlerImpl implements EventHandler {
         if (isEventStarted()) return;
 
         setState(EventState.PENDING);
-        //Do something
+        participants.clear();
+        eventAPI.getTeamHandler().getTeams().clear();
+        eventAPI.getTeamHandler().getPlayerTeamMap().clear();
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.teleport(eventAPI.getSpawnLocation());
+            participants.add(p);
+        }
     }
 
     @Override

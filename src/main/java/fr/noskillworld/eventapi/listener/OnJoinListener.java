@@ -21,6 +21,9 @@ public class OnJoinListener implements Listener {
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        player.setInvulnerable(false);
+        player.setCanPickupItems(true);
+
         try {
             eventAPI.getEventHandler().addParticipant(player);
             player.setGameMode(GameMode.ADVENTURE);
@@ -34,6 +37,8 @@ public class OnJoinListener implements Listener {
             event.setJoinMessage("§8§l»§r §3§l" + player.getName() + " §fest spectateur.");
         }
         if (eventAPI.getEventHandler().isEventStarted() && eventAPI.getEventHandler().isParticipating(player)) return;
+        player.setInvulnerable(true);
+        player.setCanPickupItems(false);
         if (eventAPI.getSpawnLocation() == null) return;
         player.teleport(eventAPI.getSpawnLocation());
     }
