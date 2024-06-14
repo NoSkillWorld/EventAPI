@@ -44,11 +44,11 @@ public class EventAPI extends JavaPlugin {
 
         //Register commands
         Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand(this));
-        Objects.requireNonNull(this.getCommand("teams")).setExecutor(new TeamCommand(this));
+        Objects.requireNonNull(this.getCommand("team")).setExecutor(new TeamCommand(this));
 
         //register TabCompleters
         Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventTabCompletion());
-        Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new TeamTabCompletion());
+        Objects.requireNonNull(this.getCommand("team")).setTabCompleter(new TeamTabCompletion());
 
         //Register listeners
         getServer().getPluginManager().registerEvents(new OnJoinListener(this), this);
