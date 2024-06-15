@@ -24,7 +24,7 @@ public class Team {
 
     public String getName() {
         if (teamName == null) {
-            return "Team " + teamId;
+            return "Team " + (teamId + 1);
         }
         return teamName;
     }

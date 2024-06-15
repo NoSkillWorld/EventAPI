@@ -18,6 +18,10 @@ public class TeamTabCompletion implements TabCompleter {
             if (args.length == 1) {
                 subCommands.add("join");
                 subCommands.add("leave");
+                if (commandSender.hasPermission("event.admin")) {
+                    subCommands.add("list");
+                    subCommands.add("init");
+                }
                 return subCommands;
             }
         }

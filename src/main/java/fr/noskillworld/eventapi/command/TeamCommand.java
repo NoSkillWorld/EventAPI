@@ -24,7 +24,6 @@ public class TeamCommand implements CommandExecutor {
             if (args.length >= 1) {
                 switch (args[0]) {
                     case "join" -> {
-                        System.out.println("join command");
                         try {
                             Team team = eventAPI.getTeamHandler().getTeamById(Integer.parseInt(args[1]));
                             eventAPI.getTeamHandler().setPlayerTeam(player, team);
@@ -32,22 +31,45 @@ public class TeamCommand implements CommandExecutor {
                             player.sendMessage(e.getMessage());
                         }
                     }
-                    case "leave" -> {
-                        System.out.println("leave command");
-                        eventAPI.getTeamHandler().setPlayerTeam(player, null);
+                    case "leave" -> eventAPI.getTeamHandler().setPlayerTeam(player, null);
+                    case "list" -> {
+                        if (!player.hasPermission("event.admin")) {
+                            player.sendMessage("§cVous n'avez pas la permission d'exécuter cette commande.");
+                            return true;
+                        }
+                        getTeamList(player);
+                    }
+                    case "init" -> {
+                        if (!player.hasPermission("event.admin")) {
+                            player.sendMessage("§cVous n'avez pas la permission d'exécuter cette commande.");
+                            return true;
+                        }
+                        int teamCount = 0;
+                        if (args.length >= 2) {
+                            teamCount = Integer.parseInt(args[1]);
+                        }
+                        eventAPI.getTeamHandler().distributePlayersIntoTeams(teamCount);
                     }
                 }
             } else {
-                player.sendMessage("§fliste des teams:");
-
-                for (Team team : eventAPI.getTeamHandler().getTeams()) {
-                    player.sendMessage("§6§l#" + team.getTeamId() + "§f: §3" + team.getName());
-                    for (Player p : team.getPlayers()) {
-                        p.sendMessage("    §8- §3" + p.getName());
-                    }
-                }
+                getTeamList(player);
             }
         }
         return true;
+    }
+
+    private void getTeamList(@NotNull Player player) {
+        if (eventAPI.getTeamHandler().getTeams().isEmpty()) {
+            player.sendMessage("§fIl n'y a actuellement aucune team enregistrée.");
+            return;
+        }
+        player.sendMessage("§fliste des teams:");
+
+        for (Team team : eventAPI.getTeamHandler().getTeams()) {
+            player.sendMessage("§6§l#" + (team.getTeamId() + 1) + " §8(§3" + team.getName() + "§8)");
+            for (Player p : team.getPlayers()) {
+                player.sendMessage("    §8- §3" + p.getName());
+            }
+        }
     }
 }

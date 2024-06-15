@@ -136,6 +136,7 @@ public class TeamHandlerImpl implements TeamHandler {
             } catch (TeamNotExistsException e) {
                 current = createTeam(teamId);
             }
+            current.getPlayers().add(p);
             playerTeam.put(p, current);
             teamId = (teamId + 1) % count;
         }
