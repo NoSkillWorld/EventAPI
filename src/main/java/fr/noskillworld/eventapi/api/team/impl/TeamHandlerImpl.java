@@ -129,6 +129,10 @@ public class TeamHandlerImpl implements TeamHandler {
         if (count == 0 || count > participants.size()) {
             count = participants.size();
         }
+        if (!teams.isEmpty() || !playerTeam.isEmpty()) {
+            teams.clear();
+            playerTeam.clear();
+        }
 
         for (Player p : participants) {
             try {

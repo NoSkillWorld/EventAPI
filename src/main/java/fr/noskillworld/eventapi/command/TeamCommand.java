@@ -3,6 +3,7 @@ package fr.noskillworld.eventapi.command;
 import fr.noskillworld.eventapi.EventAPI;
 import fr.noskillworld.eventapi.api.team.Team;
 import fr.noskillworld.eventapi.api.team.exception.TeamNotExistsException;
+import fr.noskillworld.eventapi.utils.MessageManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,14 +35,14 @@ public class TeamCommand implements CommandExecutor {
                     case "leave" -> eventAPI.getTeamHandler().setPlayerTeam(player, null);
                     case "list" -> {
                         if (!player.hasPermission("event.admin")) {
-                            player.sendMessage("§cVous n'avez pas la permission d'exécuter cette commande.");
+                            player.sendMessage(MessageManager.NO_PERMISSION.getMessage());
                             return true;
                         }
                         getTeamList(player);
                     }
                     case "init" -> {
                         if (!player.hasPermission("event.admin")) {
-                            player.sendMessage("§cVous n'avez pas la permission d'exécuter cette commande.");
+                            player.sendMessage(MessageManager.NO_PERMISSION.getMessage());
                             return true;
                         }
                         int teamCount = 0;
@@ -60,15 +61,15 @@ public class TeamCommand implements CommandExecutor {
 
     private void getTeamList(@NotNull Player player) {
         if (eventAPI.getTeamHandler().getTeams().isEmpty()) {
-            player.sendMessage("§fIl n'y a actuellement aucune team enregistrée.");
+            player.sendMessage(MessageManager.NO_TEAM_REGISTERED.getMessage());
             return;
         }
-        player.sendMessage("§fliste des teams:");
+        player.sendMessage(MessageManager.TEAM_LIST_HEAD.getMessage());
 
-        for (Team team : eventAPI.getTeamHandler().getTeams()) {
-            player.sendMessage("§6§l#" + (team.getTeamId() + 1) + " §8(§3" + team.getName() + "§8)");
-            for (Player p : team.getPlayers()) {
-                player.sendMessage("    §8- §3" + p.getName());
+        for (Team t : eventAPI.getTeamHandler().getTeams()) {
+            player.sendMessage(String.format(MessageManager.TEAM_LIST.getRawMessage(), t.getTeamId() + 1, t.getName()));
+            for (Player p : t.getPlayers()) {
+                player.sendMessage(String.format(MessageManager.TEAM_PLAYER_LIST.getRawMessage(), p.getName()));
             }
         }
     }
