@@ -2,6 +2,7 @@ package fr.noskillworld.eventapi.listener;
 
 import fr.noskillworld.eventapi.EventAPI;
 import fr.noskillworld.eventapi.api.event.exception.EventStartedException;
+import fr.noskillworld.eventapi.utils.MessageManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,14 +28,14 @@ public class OnJoinListener implements Listener {
         try {
             eventAPI.getEventHandler().addParticipant(player);
             player.setGameMode(GameMode.ADVENTURE);
-            event.setJoinMessage("§8§l»§r §3§l" + player.getName() + " §fa rejoint l'évent !");
+            event.setJoinMessage(String.format(MessageManager.PLAYER_JOIN.getInfoMessage(), player.getName()));
         } catch (EventStartedException e) {
             if (eventAPI.getEventHandler().isParticipating(player)) {
-                event.setJoinMessage("§8§l»§r §3§l" + player.getName() + " §fs'est reconnecté.");
+                event.setJoinMessage(String.format(MessageManager.PLAYER_RECONNECT.getInfoMessage(), player.getName()));
                 return;
             }
             player.setGameMode(GameMode.SPECTATOR);
-            event.setJoinMessage("§8§l»§r §3§l" + player.getName() + " §fest spectateur.");
+            event.setJoinMessage(String.format(MessageManager.PLAYER_SPECTATES.getInfoMessage(), player.getName()));
         }
         if (eventAPI.getEventHandler().isEventStarted() && eventAPI.getEventHandler().isParticipating(player)) return;
         player.setInvulnerable(true);

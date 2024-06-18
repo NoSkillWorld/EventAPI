@@ -23,7 +23,7 @@ public class EventTabCompletion implements TabCompleter {
                 subCommands.add("end");
                 subCommands.add("reset");
                 subCommands.add("setspawn");
-                subCommands.add("statut");
+                subCommands.add("infos");
                 return subCommands;
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("reset")) {

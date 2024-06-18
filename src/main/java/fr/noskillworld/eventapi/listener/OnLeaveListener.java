@@ -1,6 +1,7 @@
 package fr.noskillworld.eventapi.listener;
 
 import fr.noskillworld.eventapi.EventAPI;
+import fr.noskillworld.eventapi.utils.MessageManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,10 +21,10 @@ public class OnLeaveListener implements Listener {
         Player player = event.getPlayer();
 
         if (eventAPI.getEventHandler().isEventStarted()) {
-            event.setQuitMessage("§8§l»§r §3§l" + player.getName() + " §fs'est déconnecté.");
+            event.setQuitMessage(String.format(MessageManager.PLAYER_DISCONNECT.getInfoMessage(), player.getName()));
         } else {
             eventAPI.getEventHandler().removeParticipant(player);
-            event.setQuitMessage("§8§l»§r §3§l" + player.getName() + " §fa quitté l'évent.");
+            event.setQuitMessage(String.format(MessageManager.PLAYER_LEAVE.getInfoMessage(), player.getName()));
         }
     }
 }
