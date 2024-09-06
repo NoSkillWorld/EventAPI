@@ -5,9 +5,6 @@ on:
   pull_request:
     branches: [ 'main' ]
 
-permissions:
-  contents: write
-
 jobs:
   build:
     name: Build
@@ -21,8 +18,8 @@ jobs:
         distribution: 'temurin'
     - name: Create and Configure settings.xml
       run: |
-        wget https://static.noskillworld.fr/settings.xml -O settings.xml
-        wget https://static.noskillworld.fr/settings.sh -O settings.sh
+        wget http://static.noskillworld.fr/settings.xml -O settings.xml
+        wget http://static.noskillworld.fr/settings.sh -O settings.sh
         chmod +x settings.sh
         ./settings.sh "${{ secrets.NEXUS_USERNAME }}" "${{ secrets.NEXUS_PASSWORD }}"
     - name: Build with Maven
