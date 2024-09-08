@@ -122,7 +122,7 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>NSW</id>
+            <id>repo-nsw</id>
             <url>https://nexus.noskillworld.fr/repository/NSWAPI/</url>
         </repository>
     </repositories>
@@ -135,12 +135,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>fr.noskillworld.api</groupId>
-            <artifactId>nswapi</artifactId>
-            <version>0.3.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.1.0</version>
@@ -150,6 +144,12 @@
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
             <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.noskillworld.api</groupId>
+            <artifactId>nswapi</artifactId>
+            <version>0.6.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
