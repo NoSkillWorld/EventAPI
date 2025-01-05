@@ -20,7 +20,6 @@ public class TeamTabCompletion implements TabCompleter {
                 subCommands.add("leave");
                 if (commandSender.hasPermission("event.admin")) {
                     subCommands.add("list");
-                    subCommands.add("init");
                 }
                 return subCommands;
             }

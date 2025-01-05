@@ -14,10 +14,14 @@ import java.util.Map;
 
 public class TeamHandlerImpl implements TeamHandler {
 
+    private final EventAPI instance;
+
     private final Map<Player, Team> playerTeam;
     private final List<Team> teams;
 
-    public TeamHandlerImpl() {
+    public TeamHandlerImpl(EventAPI instance) {
+        this.instance = instance;
+
         playerTeam = new HashMap<>();
         teams = new ArrayList<>();
     }
@@ -121,13 +125,14 @@ public class TeamHandlerImpl implements TeamHandler {
     }
 
     @Override
-    public void distributePlayersIntoTeams(int count) {
-        List<Player> participants = EventAPI.getInstance().getEventHandler().getParticipants();
+    public void distributePlayersIntoTeams() {
+        List<Player> participants = instance.getEventHandler().getParticipants();
+        int teamCount = instance.getEventConfig().getMinTeams();
         Team current;
         int teamId = 0;
 
-        if (count == 0 || count > participants.size()) {
-            count = participants.size();
+        if (teamCount == 0 || teamCount > participants.size()) {
+            teamCount = participants.size();
         }
         if (!teams.isEmpty() || !playerTeam.isEmpty()) {
             teams.clear();
@@ -142,7 +147,7 @@ public class TeamHandlerImpl implements TeamHandler {
             }
             current.getPlayers().add(p);
             playerTeam.put(p, current);
-            teamId = (teamId + 1) % count;
+            teamId = (teamId + 1) % teamCount;
         }
     }
 }

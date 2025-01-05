@@ -1,17 +1,22 @@
 package fr.noskillworld.eventapi;
 
 import fr.noskillworld.api.NSWAPI;
+import fr.noskillworld.api.gui.GuiManager;
 import fr.noskillworld.api.utils.Credentials;
+import fr.noskillworld.eventapi.api.event.EventConfig;
 import fr.noskillworld.eventapi.api.event.impl.EventHandlerImpl;
 import fr.noskillworld.eventapi.api.team.impl.TeamHandlerImpl;
 import fr.noskillworld.eventapi.command.EventCommand;
 import fr.noskillworld.eventapi.command.TeamCommand;
 import fr.noskillworld.eventapi.command.completion.EventTabCompletion;
 import fr.noskillworld.eventapi.command.completion.TeamTabCompletion;
+import fr.noskillworld.eventapi.gui.TeamSelectGUI;
+import fr.noskillworld.eventapi.gui.TestGUI;
+import fr.noskillworld.eventapi.listener.InventoryClickListener;
 import fr.noskillworld.eventapi.listener.OnJoinListener;
 import fr.noskillworld.eventapi.listener.OnLeaveListener;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.bukkit.Location;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -19,13 +24,16 @@ import java.util.logging.Logger;
 
 public class EventAPI extends JavaPlugin {
 
-    private Location spawnLocation;
-    private final String prefix;
+    private static String prefix;
 
-    private static EventAPI instance;
-    private static EventHandlerImpl eventHandler;
-    private static TeamHandlerImpl teamHandler;
-    private static Logger logger;
+    private EventAPI instance;
+
+    private boolean isSetup = false;
+    private EventConfig eventConfig = null;
+
+    private final EventHandlerImpl eventHandler;
+    private final TeamHandlerImpl teamHandler;
+    private final Logger logger;
 
     private static NSWAPI nswapi;
 
@@ -34,13 +42,16 @@ public class EventAPI extends JavaPlugin {
         prefix = "§8[§3Event§8] §r";
 
         eventHandler = new EventHandlerImpl(this);
-        teamHandler = new TeamHandlerImpl();
+        teamHandler = new TeamHandlerImpl(this);
         logger = Logger.getLogger("Minecraft");
     }
 
     @Override
     public void onEnable() {
         setAPI();
+
+        //Register the spigot service provider
+        getServer().getServicesManager().register(EventAPI.class, this, this, ServicePriority.High);
 
         //Register commands
         Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand(this));
@@ -50,9 +61,13 @@ public class EventAPI extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventTabCompletion());
         Objects.requireNonNull(this.getCommand("team")).setTabCompleter(new TeamTabCompletion());
 
+        //Register GUIs
+        registerGUIs();
+
         //Register listeners
         getServer().getPluginManager().registerEvents(new OnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new OnLeaveListener(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(this), this);
 
         logger.info(String.format("[%s] Plugin loaded successfully", getDescription().getName()));
         logger.info("""
@@ -68,8 +83,16 @@ public class EventAPI extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        instance.getAPI().getDatabaseManager().getConnector().close();
+        getServer().getServicesManager().unregisterAll(this);
+
         instance = null;
         logger.info(String.format("[%s] Plugin shut down successfully", getDescription().getName()));
+    }
+
+    public void setup(EventConfig eventConfig) {
+        isSetup = true;
+        this.eventConfig = eventConfig;
     }
 
     private void setAPI() {
@@ -85,11 +108,15 @@ public class EventAPI extends JavaPlugin {
         nswapi = NSWAPI.create(new Credentials(user, password, name));
     }
 
-    public static EventAPI getInstance() {
+    public EventConfig getEventConfig() {
+        return eventConfig;
+    }
+
+    public EventAPI getInstance() {
         return instance;
     }
 
-    public static NSWAPI getAPI() {
+    public NSWAPI getAPI() {
         return nswapi;
     }
 
@@ -101,15 +128,19 @@ public class EventAPI extends JavaPlugin {
         return teamHandler;
     }
 
-    public Location getSpawnLocation() {
-        return spawnLocation;
-    }
-
-    public String getPrefix() {
+    public static String getPrefix() {
         return prefix;
     }
 
-    public void setSpawnLocation(Location location) {
-        spawnLocation = location;
+    private void registerGUIs() {
+        GuiManager guiManager = nswapi.getGuiManager();
+
+        guiManager.addMenu(new TestGUI());
+        guiManager.addMenu(new TeamSelectGUI());
+    }
+
+    public boolean isSetup() {
+        if (eventConfig == null) return false;
+        return isSetup;
     }
 }

@@ -40,17 +40,6 @@ public class TeamCommand implements CommandExecutor {
                         }
                         getTeamList(player);
                     }
-                    case "init" -> {
-                        if (!player.hasPermission("event.admin")) {
-                            player.sendMessage(MessageManager.NO_PERMISSION.getMessage());
-                            return true;
-                        }
-                        int teamCount = 0;
-                        if (args.length >= 2) {
-                            teamCount = Integer.parseInt(args[1]);
-                        }
-                        eventAPI.getTeamHandler().distributePlayersIntoTeams(teamCount);
-                    }
                 }
             } else {
                 getTeamList(player);

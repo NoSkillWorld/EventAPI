@@ -1,6 +1,7 @@
 package fr.noskillworld.eventapi.listener;
 
 import fr.noskillworld.eventapi.EventAPI;
+import fr.noskillworld.eventapi.api.event.EventConfig;
 import fr.noskillworld.eventapi.api.event.exception.EventStartedException;
 import fr.noskillworld.eventapi.utils.MessageManager;
 import org.bukkit.GameMode;
@@ -40,7 +41,13 @@ public class OnJoinListener implements Listener {
         if (eventAPI.getEventHandler().isEventStarted() && eventAPI.getEventHandler().isParticipating(player)) return;
         player.setInvulnerable(true);
         player.setCanPickupItems(false);
-        if (eventAPI.getSpawnLocation() == null) return;
-        player.teleport(eventAPI.getSpawnLocation());
+
+        if (eventAPI.isSetup()) {
+            if (eventAPI.getEventConfig().getSpawnLocation() == null) return;
+            player.teleport(eventAPI.getEventConfig().getSpawnLocation());
+        } else {
+            player.sendMessage(MessageManager.EVENT_NOT_SETUP.getWarnMessage());
+            eventAPI.setup(new EventConfig());
+        }
     }
 }

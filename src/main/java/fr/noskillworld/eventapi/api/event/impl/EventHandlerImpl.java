@@ -6,6 +6,7 @@ import fr.noskillworld.eventapi.api.event.EventState;
 import fr.noskillworld.eventapi.api.event.exception.EventStartedException;
 import fr.noskillworld.eventapi.api.team.Team;
 import fr.noskillworld.eventapi.event.EventStateChangeEvent;
+import fr.noskillworld.eventapi.gui.TeamSelectGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -50,6 +51,22 @@ public class EventHandlerImpl implements EventHandler {
     }
 
     @Override
+    public void init() {
+        switch (eventAPI.getEventConfig().getTeamSelectMode()) {
+            case SOLO -> {
+                eventAPI.getEventConfig().setMinTeams(getParticipants().size());
+                eventAPI.getTeamHandler().distributePlayersIntoTeams();
+            }
+            case CHOOSE -> {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    eventAPI.getAPI().getGuiManager().open(p, TeamSelectGUI.class);
+                }
+            }
+            case RANDOM -> eventAPI.getTeamHandler().distributePlayersIntoTeams();
+        }
+    }
+
+    @Override
     public void setName(String name) {
         eventName = name;
     }
@@ -91,9 +108,6 @@ public class EventHandlerImpl implements EventHandler {
 
     private void start() {
         setState(EventState.STARTED);
-        if (eventAPI.getTeamHandler().getTeams().isEmpty() || eventAPI.getTeamHandler().getTeams() == null) {
-            eventAPI.getTeamHandler().distributePlayersIntoTeams(participants.size());
-        }
         for (Player p : participants) {
             p.sendTitle("§3Début de l'évent", "§7Bon courage !", 0, 60, 40);
             p.playSound(p, Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
@@ -124,7 +138,7 @@ public class EventHandlerImpl implements EventHandler {
         eventAPI.getTeamHandler().getPlayerTeamMap().clear();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.teleport(eventAPI.getSpawnLocation());
+            p.teleport(eventAPI.getEventConfig().getSpawnLocation());
             participants.add(p);
         }
     }

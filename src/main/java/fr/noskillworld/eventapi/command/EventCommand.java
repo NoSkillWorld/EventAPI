@@ -31,16 +31,21 @@ public class EventCommand implements CommandExecutor {
                     case "start" -> eventAPI.getEventHandler().startEvent(isForced);
                     case "end" -> eventAPI.getEventHandler().endEvent(isForced);
                     case "reset" -> eventAPI.getEventHandler().resetEvent(isForced);
-                    case "setspawn" -> eventAPI.setSpawnLocation(player.getLocation());
+                    case "setspawn" -> {
+                        eventAPI.getEventConfig().setSpawnLocation(player.getLocation());
+                        player.sendMessage(MessageManager.SPAWN_SET.getMessage());
+                    }
+                    case "init" -> eventAPI.getEventHandler().init();
                     case "infos" -> {
                         int playerCount = eventAPI.getEventHandler().getParticipants().size();
                         String statusDesc = eventAPI.getEventHandler().getEventState().getDescription();
 
                         player.sendMessage(String.format(MessageManager.EVENT_STATUS.getMessage(), statusDesc, playerCount, getParticipants()));
                     }
+                    default -> player.sendMessage(MessageManager.INCORRECT_CMD.getMessage());
                 }
             } else {
-                player.sendMessage("oui bon");
+                player.sendMessage(MessageManager.INCORRECT_CMD.getMessage());
             }
         }
         return true;

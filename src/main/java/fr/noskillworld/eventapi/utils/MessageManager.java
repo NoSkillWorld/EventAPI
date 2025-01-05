@@ -1,18 +1,20 @@
 package fr.noskillworld.eventapi.utils;
 
 import fr.noskillworld.eventapi.EventAPI;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public enum MessageManager {
     //Error messages
     NO_PERMISSION("§cVous n'avez pas la permission d'exécuter cette commande !"),
+    INCORRECT_CMD("§cCommande ou sous-commande inconnue."),
     NO_TEAM_REGISTERED("§cIl n'y a actuellement aucune team enregistrée."),
 
     //Success messages
+    SPAWN_SET("Le spawn a été défini à votre position."),
 
     //Other messages
-    TEAM_LIST_HEAD("§fListe des teams:"),
+    EVENT_NOT_SETUP("§cL'évent n'a pas été configuré, les paramètres par défaut ont donc étés appliqués."),
+    TEAM_LIST_HEAD("§fListe des teams :"),
     TEAM_LIST("§6§l#%d §8(§3%s§8)"),
     TEAM_PLAYER_LIST("    §8- §3%s"),
     PLAYER_JOIN("§3§l%s §fa rejoint l'évent !"),
@@ -36,11 +38,15 @@ public enum MessageManager {
     }
 
     public @NotNull String getMessage() {
-        return EventAPI.getInstance().getPrefix() + this.message;
+        return EventAPI.getPrefix() + this.message;
     }
 
     public @NotNull String getInfoMessage() {
         return "§8§l»§r " + this.message;
+    }
+
+    public @NotNull String getWarnMessage() {
+        return "§8§l| §6⚠§r " + this.message;
     }
 
     public @NotNull String getRawMessage() {

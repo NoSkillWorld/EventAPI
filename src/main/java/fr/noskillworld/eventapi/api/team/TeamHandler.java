@@ -75,11 +75,9 @@ public interface TeamHandler {
     void setPlayerTeam(Player player, Team team);
 
     /**
-     * Distributes players into a certain amount of teams
-     *
-     * @param count The wanted team count
+     * Distributes players into teams
      */
-    void distributePlayersIntoTeams(int count);
+    void distributePlayersIntoTeams();
 
     /**
      * Creates a new empty team

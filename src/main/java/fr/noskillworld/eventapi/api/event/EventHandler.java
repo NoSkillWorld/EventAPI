@@ -30,6 +30,11 @@ public interface EventHandler {
     String getName();
 
     /**
+     * Initialize the event
+     */
+    void init();
+
+    /**
      * Sets the name of the event
      *
      * @param name the name to set
